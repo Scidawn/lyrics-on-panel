@@ -11,14 +11,14 @@
             }
         ],
         "Category": "Multimedia",
-        "Description": "[Plasma 6] A fork that could display lyrics of your Spotify | Netease Cloud Music | Elisa | etc. current-playing-song on anywhere, including kde panel and desktop. ",
+        "Description": "[Plasma 6] A fork that displays lyrics of your Spotify | Netease Cloud Music | Elisa | etc. current-playing-song on anywhere, including kde panel and desktop. ",
         "Icon": "preferences-media-playback-amarok",
-        "Id": "lyrics-on-panel-plasma6-fork",
+        "Id": "com.github.scidawn.lyrics",
         "License": "GPLv3",
-        "Name": "lyrics-on-panel-plasma6-fork",
-        "KPackageStructure": "Plasma/Applet",
+        "Name": "lyrics-on-panel-fork",
         "Version": "1.0",
-        "Website": "https://github.com/Scidawn/
+        "Website": "github.com/Scidawn/lyrics-on-panel/tree/plasma6"
     },
+    "KPackageStructure": "Plasma/Applet",
     "X-Plasma-API-Minimum-Version": "6.0"
 }
