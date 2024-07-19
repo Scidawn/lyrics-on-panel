@@ -44,7 +44,7 @@ PlasmoidItem {
 
     Text {
         id: lyricText
-        text: "Please open the configuration of this widget and read the developer's note!"
+        text: "Ready"
         color: config_lyricTextColor
         font.pixelSize: config_lyricTextSize
         font.bold: config_lyricTextBold
@@ -495,12 +495,31 @@ PlasmoidItem {
     // exception handling: no lyric => only display title - artists
     property string lrc_not_exists: {
         if (currentMediaTitle && currentMediaArtists) {
-            return currentMediaTitle + " - " + currentMediaArtists;
+            return addLineBreak(currentMediaTitle + " - " + currentMediaArtists);
         } else if (currentMediaTitle && !currentMediaArtists) {
-            return currentMediaTitle;
+            return addLineBreak(currentMediaTitle);
         } else {
             return "This song doesn't have any lyric";
         }
+    }
+
+    function addLineBreak(lyric) {
+        if (!lyric || lyric === "") {
+            return "";
+        }
+
+        if (lyric.length < 40) {
+            return lyric;
+        }
+
+        var line_break = Math.floor(lyric.length / 2);
+        for (line_break; line_break < lyric.length; line_break++) {
+            if ([" ", ",", ".", "!", "?", ":"].includes(lyric[line_break])) {
+                return lyric.substring(0, line_break) + "\n" + lyric.substring(line_break + 1);
+            }
+        }
+
+        return lyric;
     }
 
     // fetch the current media id from yesplaymusic(ypm);
@@ -569,7 +588,7 @@ PlasmoidItem {
                 lyricsWTimes.append({time: timestamp, lyric: lyricPerRow});
             }
         }
-        lyricDisplayTimer.start()
+        lyricDisplayTimer.start();
     }
 
     function fetchLyricsCompatibleMode() {
@@ -704,7 +723,7 @@ PlasmoidItem {
                         if (!currentLWT || !currentLyric || currentLyric === "" && prevNonEmptyLyric != "") {
                             lyricText.text = prevNonEmptyLyric;
                         } else {
-                            lyricText.text = currentLyric;
+                            lyricText.text = addLineBreak(currentLyric);
                             prevNonEmptyLyric = currentLyric;
                         }
                         break;
