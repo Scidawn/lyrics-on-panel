@@ -427,6 +427,7 @@ PlasmoidItem {
     property int config_lyricTextVerticalOffset: Plasmoid.configuration.lyricTextVerticalOffset
     property int config_whiteMediaControlIconsChecked: Plasmoid.configuration.whiteMediaControlIconsChecked;
     property int config_preferedWidgetWidth: Plasmoid.configuration.preferedWidgetWidth;
+    property int config_lineBreakThreshold: Plasmoid.configuration.lineBreakThreshold;
 
     //Other Media Player's mpris2 data
     property int mprisCurrentPlayingSongTimeMS: {
@@ -508,7 +509,7 @@ PlasmoidItem {
             return "";
         }
 
-        if (lyric.length < 40) {
+        if (lyric.length < config_lineBreakThreshold) {
             return lyric;
         }
 
