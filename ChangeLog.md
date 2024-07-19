@@ -17,3 +17,10 @@
 2. Now, if you switch from YesPlayMusic mode to Spotify mode, we will first pause the currently playing music from YesPlayMusic. Then, you need to manually open Spotify and click the play (resume) button. Vice versa.
 3. Fixed the problem where lyrics from Spotify would still appear even when the mode is switched to YesPlayMusic.
 4. Now you can control the width of this widget on the configuration page.
+
+## v.1.2 Forked by Scidawn
+### Key Points
+1. changed default configuration
+2. realigned the buttons into compact mode
+3. added automatic line break for long lyrics
+4. Added a configuration option to change the Threshold for automatic line break
