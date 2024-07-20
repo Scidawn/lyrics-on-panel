@@ -66,11 +66,10 @@ PlasmoidItem {
 
         Image {
             source: backwardIcon
-            sourceSize.width: config_mediaControllItemSize //不能用width, 锯齿太严重，直接控制图片渲染svg的大小
+            sourceSize.width: config_mediaControllItemSize // Cant use width directly, just control the size of the svg
             sourceSize.height: config_mediaControllItemSize
             anchors.left: parent.left
             anchors.top: parent.top
-            //anchors.verticalCenter: parent.verticalCenter
 
             MouseArea {
                 anchors.fill: parent
@@ -86,7 +85,6 @@ PlasmoidItem {
             sourceSize.height: config_mediaControllItemSize
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            //anchors.verticalCenter: parent.verticalCenter
 
             MouseArea {
                 anchors.fill: parent
@@ -107,8 +105,6 @@ PlasmoidItem {
             anchors.left: parent.left
             anchors.leftMargin: 1 * (config_mediaControllItemSize + config_mediaControllSpacing)
             anchors.top: parent.top
-            //anchors.verticalCenter: parent.verticalCenter
-
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -124,7 +120,6 @@ PlasmoidItem {
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             anchors.leftMargin: 1 * (config_mediaControllItemSize + config_mediaControllSpacing)
-            //anchors.verticalCenter: parent.verticalCenter
 
             MouseArea {
                 anchors.fill: parent
@@ -168,7 +163,7 @@ PlasmoidItem {
                     if (config_yesPlayMusicChecked) {
                         menuDialog.x = globalPos.x;
                         menuDialog.y = globalPos.y * 3.5;
-                        if (!dialogShowed) { //苯办法了，后面看下怎么判定失去焦点
+                        if (!dialogShowed) { // We will determine loss of focus later.
                             menuDialog.show(); 
                             dialogShowed = true;
                         } else {
@@ -188,7 +183,7 @@ PlasmoidItem {
     property bool dialogShowed: false;
     property bool ypmLogined: false;
     property string ypmUserName: "";
-    property string ypmCookie: "";//qml不让设。
+    property string ypmCookie: "";//qml is not allowed to set cookies
     property string csrf_token: ""
     property string neteaseID: ""
     property bool currentMusicLiked: false
@@ -310,7 +305,7 @@ PlasmoidItem {
             // console.log(multiplexerModel);
             // console.log(multiplexerModel.toString());
             //log();
-            // 如果 mpris 里面， 当前播放器和之前的播放器不一样，就重置。
+            //If the current player is different from the previous player, reset.
             if (!currentMediaTitle && !currentMediaArtists) {
                 mpris2Model.currentPlayer.Pause();
             }
@@ -318,15 +313,14 @@ PlasmoidItem {
                 nameOfPreviousPlayer = nameOfCurrentPlayer;
                 reset();
             }
-            // 如果 设置 里面， 当前播放器和之前设置的播放器不一样，就重置。
+             //If the current player is different from the previous player, reset.
             if (prevExpectedPlayerName != currExpectedPlayerName) {
                 prevExpectedPlayerName = currExpectedPlayerName;
                 mpris2Model.currentPlayer.Pause();
                 reset();
             }
-            // 前后歌名不一样， 重置。
+            // If the current media title is different from the previous media title, reset.
             if (currentMediaTitle != previousMediaTitle || currentMediaArtists != previousMediaArtists) {
-                //console.log("Update current media artist and title");
                 reset();
                 previousMediaTitle = currentMediaTitle;
                 previousMediaArtists = currentMediaArtists;
@@ -486,7 +480,7 @@ PlasmoidItem {
 
     // construct the lrclib's request url
     property string lrcQueryUrl: {
-        if (queryFailed) { // 如果失败了就用歌名做一次模糊查询。lrclib只支持模糊查询一个field.所以只能专辑|歌手名|歌名选一个， 很明显歌名的结果最准确。
+        if (queryFailed) { // If failed, use the title to do a fuzzy search
             return lrclib_base_url + "/api/search" + "?track_name=" + encodeURIComponent(currentMediaTitle) + 
                   "&artist_name=" + encodeURIComponent(currentMediaArtists) + "&album_name=" + encodeURIComponent(currentMediaAlbum) + "&q=" 
                   + encodeURIComponent(currentMediaTitle);
@@ -507,6 +501,7 @@ PlasmoidItem {
         }
     }
 
+    // add line break around the middle of the lyric if the lyric is too long
     function addLineBreak(lyric) {
         if (!lyric || lyric === "") {
             return "";
@@ -528,7 +523,6 @@ PlasmoidItem {
 
     // fetch the current media id from yesplaymusic(ypm);
     function fetchMediaIdYPM() {
-        //console.log("Start fetching YPM music id");
         var xhr = new XMLHttpRequest();
         xhr.open("GET", ypm_base_url + "/player");
         xhr.onreadystatechange = function() {
@@ -539,7 +533,6 @@ PlasmoidItem {
                         previousMediaTitle = currentMediaTitle;
                         previousMediaArtists = currentMediaArtists;
                         currentMediaYPMId = response.currentTrack.id;
-                        //console.log("Successfully fetched YPM music id");
                         fetchSyncLyricYPM();
                     }
                 }
@@ -550,7 +543,6 @@ PlasmoidItem {
 
     // fetch the current media lyric from yesplaymusic by media id
     function fetchSyncLyricYPM() {
-        //console.log("Start fetching YPM lyric");
         var xhr = new XMLHttpRequest();
         xhr.open("GET", ypm_base_url + "/api/lyric?id=" + currentMediaYPMId);
         xhr.onreadystatechange = function() {
@@ -559,7 +551,6 @@ PlasmoidItem {
                 //console.log("YPM Network OK");
                 if (response && response.lrc && response.lrc.lyric) {
                     lyricsWTimes.clear();
-                    //console.log("Successfully fetched YPM lyrics");
                     isYPMLyricFound = true;
                     parseLyric(response.lrc.lyric);
                     //parseAndUpload(response.lrc.lyric);
@@ -582,7 +573,6 @@ PlasmoidItem {
     // parse the lyric
     // [["[00:26.64] first row of lyric\n"]], ["[00:29.70] second row of lyric\n]"],etc...]
     function parseLyric(lyrics) {
-        //console.log("Start parsing Lyrics");
         var lrcList = lyrics.split("\n");
         for (var i = 0; i < lrcList.length; i++) {
             var lyricPerRowWTime = lrcList[i].split("]");
@@ -597,7 +587,6 @@ PlasmoidItem {
 
     function fetchLyricsCompatibleMode() {
         var xhr = new XMLHttpRequest();
-        //console.log("Entered fetchlyrics compatible mode.");
         xhr.open("GET", lrcQueryUrl);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
@@ -605,7 +594,6 @@ PlasmoidItem {
                 if ((currentMediaTitle !== "Advertisement") && !isCompatibleLRCFound) { //Advertisement
                     //console.log("Start parsing fetch result.");
                     if (!xhr.responseText || xhr.responseText === "[]") {
-                        //console.log("[Compatible Mode] Failed to get the lyrics.");
                         queryFailed = true;
                         previousLrcId = Number.MIN_VALUE;
                         lyricsWTimes.clear();
@@ -613,9 +601,8 @@ PlasmoidItem {
                     } else {
                         var response = JSON.parse(xhr.responseText)
                         queryFailed = false;
-                        if (response && response.length > 0 && previousLrcId !== response[0].id.toString()) { //会出现 Spotify传给Mpris的歌曲名 与 lrclib中的歌曲名不一样的情况，改用id判断
+                        if (response && response.length > 0 && previousLrcId !== response[0].id.toString()) { // There will be a situation that the song name from Spotify is different from the song name in lrclib, so we use id.
                             lyricsWTimes.clear();
-                            //console.log("[Compatible Mode] Get the desired lyric!");
                             previousMediaTitle = currentMediaTitle;
                             previousMediaArtists = currentMediaArtists;
                             previousLrcId = response[0].id.toString();
@@ -699,11 +686,11 @@ PlasmoidItem {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 if (xhr.responseText && xhr.responseText !== "[]") {
                     var response = JSON.parse(xhr.responseText);
-                    ypmUserName = "你好， " + response.profile.nickname;
-                    ypmCreateDays.text = "您已加入云村: " + response.createDays + "天";
-                    ypmSongsListened.text = "总计听歌:" + response.listenSongs + "首";
-                    ypmFollowed.text = "粉丝: " + response.profile.followeds;
-                    ypmFollow.text =  "关注: " + response.profile.follows;
+                    ypmUserName = "Hello, " + response.profile.nickname;
+                    ypmCreateDays.text = "You have been using YPM for " + response.profile.createDays + " days";
+                    ypmSongsListened.text = "Songs listened: " + response.profile.listenSongs;
+                    ypmFollowed.text = "Followed: " + response.profile.followeds;
+                    ypmFollow.text =  "Follow: " + response.profile.follows;
                 }
             }
         };
